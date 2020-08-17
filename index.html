@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+	<head>
+		<meta charset="utf-8"/>
+		<title en-text="Drizzler Map" class="for-translation">コウモリマップ</title>
+		<script type="text/javascript" src="./assets/js/lib/html2canvas.min.js"></script>
+		<script type="text/javascript" src="./assets/js/lib/createjs.min.js"></script>
+		<script type="text/javascript" src="./dist/salmon.drizzlerjs.js"></script>
+		<meta name="twitter:card"        content="summary" />
+		<meta name="twitter:site"        content="@GungeeSpla" />
+		<meta name="twitter:title"       content="コウモリマップ / Drizzler Map" />
+		<meta name="twitter:description" content="コウモリの誘導シミュレーションができます。" />
+		<meta name="twitter:image"       content="https://gungeespla.github.io/drizzlerjs/thumb.png" />
+		<style>
+			body {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="drizzlerjs-wrapper">
+			<div id="drizzlerjs-canvas-wrapper"></div>
+			<div class="drizzlerjs-button-2 for-translation" en-text="Save Image" style="min-width: max-content; z-index: 100000001; position: absolute; right: 10px; top: 5px;" onclick="drizzlerjs.downloadCanvas()" data-html2canvas-ignore>画像を保存</div>
+			<div id="drizzlerjs-bottom-tools" data-html2canvas-ignore>
+				<div id="drizzlerjs-not-rtmode-tools" style="display: none;">
+					<h5 en-text="Add" class="for-translation">追加</h5>
+					<div class="h5-after"></div>
+					<div class="for-translation drizzlerjs-button-1" en-text="Drizzler" onclick="drizzlerjs.addDrizzler();">コウモリ</div><div class="for-translation drizzlerjs-button-1" en-text="Squid" onclick="drizzlerjs.addSquid();">イカタコ</div><div class="for-translation drizzlerjs-button-1" en-text="Other" onclick="document.getElementById('drizzlerjs-mask-tools').style.setProperty('display', 'block');">その他</div><div class="for-translation drizzlerjs-button-2" en-text="Delete All" onclick="drizzlerjs.removeAllPieces()">すべて削除</div>
+					<h5 en-text="Toggle" class="for-translation" style="background: #4caf50;">切替</h5>
+					<div class="h5-after" style="background: #4caf50;"></div>
+					<div class="for-translation drizzlerjs-button-3" en-text="Parking" onclick="drizzlerjs.toggleConnectMap();">経路と駐車場</div><div class="drizzlerjs-button-3" onclick="drizzlerjs.selectStartVoronoi();"><span en-text="Voronoi" class="for-translation">ボロノイ図</span><div class="for-translation drizzlerjs-desc"     en-text="Choose a Drizzler for voronoi diagram" id="drizzlerjs-voronoi-desc">着目するコウモリを選択してください</div></div><div class="for-translation drizzlerjs-button-3" en-text="Arrow" onclick="drizzlerjs.toggleArrow();">コウモリ矢印</div><div class="for-translation drizzlerjs-button-2" en-text="Stage" onclick="drizzlerjs.showOptions()">ステージ</div>
+					<!--
+					<div class="for-translation drizzlerjs-button-2" en-text="Return" onclick="tyranoAPI.jump('learn.ks', 'Panel_2_Return')">戻る</div>
+					-->
+				</div>
+				<div id="drizzlerjs-rtmode-tools" style="display: none;">
+					<div class="for-translation drizzlerjs-button-1" en-text="Parking" onclick="drizzlerjs.toggleConnectMap();">経路と駐車場</div>
+					<div class="for-translation drizzlerjs-button-1" en-text="Circle" onclick="drizzlerjs.toggleDrizzlerCircle();">コウモリの円</div>
+					<div class="for-translation drizzlerjs-button-2" en-text="Return" onclick="tyranoAPI.jump('learn.ks', 'Panel_2_Return')">戻る</div>
+				</div>
+			</div>
+			<div id="drizzlerjs-mask-tools" onclick="document.getElementById('drizzlerjs-mask-tools').style.setProperty('display', 'none');">
+			</div>
+			<div id="drizzlerjs-options-wrapper" style="display: none;" data-html2canvas-ignore>
+				<h4 class="for-translation" en-text="Stage">ステージ</h4>
+				<select id="drizzlerjs-course-select">
+					<option class="for-translation" en-text="Spawning Grounds" value="shekenadamu-normal">シェケナダム</option>
+					<option class="for-translation" en-text="Spawning Grounds (High Tide)" value="shekenadamu-high">シェケナダム(満潮)</option>
+					<option class="for-translation" en-text="Spawning Grounds (Low Tide)" value="shekenadamu-low">シェケナダム(干潮)</option>
+					<option class="for-translation" en-text="Marooner's Bay" value="domburako-normal">難破船ドン･ブラコ</option>
+					<option class="for-translation" en-text="Marooner's Bay (High Tide)" value="domburako-high">難破船ドン･ブラコ(満潮)</option>
+					<option class="for-translation" en-text="Marooner's Bay (Low Tide)" value="domburako-low">難破船ドン･ブラコ(干潮)</option>
+					<option class="for-translation" en-text="Lost Outpost" value="shaketoba-normal">海上集落シャケト場</option>
+					<option class="for-translation" en-text="Lost Outpost (High Tide)" value="shaketoba-high">海上集落シャケト場(満潮)</option>
+					<option class="for-translation" en-text="Lost Outpost (Low Tide)" value="shaketoba-low">海上集落シャケト場(干潮)</option>
+					<option class="for-translation" en-text="Salmonid Smokeyard" value="tokishirazu-normal">トキシラズいぶし工房</option>
+					<option class="for-translation" en-text="Salmonid Smokeyard (High Tide)" value="tokishirazu-high">トキシラズいぶし工房(満潮)</option>
+					<option class="for-translation" en-text="Salmonid Smokeyard (Low Tide)" value="tokishirazu-low">トキシラズいぶし工房(干潮)</option>
+					<option class="for-translation" en-text="Ruins of Ark Polaris" value="porarisu-normal">朽ちた箱舟ポラリス</option>
+					<option class="for-translation" en-text="Ruins of Ark Polaris (High Tide)" value="porarisu-high">朽ちた箱舟ポラリス(満潮)</option>
+					<option class="for-translation" en-text="Ruins of Ark Polaris (Low Tide)" value="porarisu-low">朽ちた箱舟ポラリス(干潮)</option>
+				</select>
+				<div class="drizzlerjs-button-1 for-translation" en-text="Close" style="position: absolute; min-width: max-content; right: 8px; bottom: 5px;" onclick="drizzlerjs.hideOptions()">閉じる</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		const navigatorLang = navigator.language || navigator.userLanguage || 'ja';
+		const locationQueries = ((url) => {
+			const urlStr = String(url);
+			const queryStr = urlStr.slice(urlStr.indexOf('?') + 1);
+			const queries = {};
+			if (!queryStr) {
+				return queries;
+			}
+			queryStr.split('&').forEach((queryStr) => {
+				const queryArr = queryStr.split('=');
+				queries[queryArr[0]] = queryArr[1];
+			});
+			return queries;
+		})(window.location);
+		const langKey = (locationQueries.lang === 'ja')
+			? 'ja'
+			: (locationQueries.lang === 'en')
+				? 'en'
+				: (navigatorLang.indexOf('ja') > -1)
+					? 'ja'
+					: 'en';
+		window.onload = () => {
+			drizzlerjs.start({
+				zmapImageDir: './assets/img/zmap',
+				pieceImageDir: './assets/img/piece',
+				weaponImageDir: './assets/img/weapon',
+				courseImageDir: './assets/img/course',
+				course: 'shekenadamu',
+				tide: 'normal',
+				lang: langKey,
+				isRTMode: false,
+				canvasWidth: window.innerWidth,
+				canvasHeight: window.innerHeight,
+			});
+			if (langKey === 'en') {
+				Array.prototype.forEach.call(document.head.querySelectorAll('.for-translation'), ($forTranslation) => {
+					$forTranslation.textContent = $forTranslation.getAttribute('en-text');
+				});
+			}
+		}
+	</script>
+</html>
