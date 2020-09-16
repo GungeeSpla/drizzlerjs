@@ -349,7 +349,7 @@ export const COURSE_DATA = {
 				[1184, 913],
 				[1133, 787]
 			],
-			lines: ['FE', 'FA', 'GA', 'GE', 'BA', 'BC', 'AE', 'AD', 'AC', 'ED', 'CD', 'DH', 'DI', 'DJ', 'HI', 'JI'],
+			lines: ['FE', 'FA', 'GA', 'GE', 'BA', 'BC', 'AE', 'AD', 'AC', 'ED', 'CD', 'DH', 'DI', 'DJ', 'HI', 'JI', 'CJ'],
 			width: 2000,
 			height: 2000,
 			scale: 0.721,
